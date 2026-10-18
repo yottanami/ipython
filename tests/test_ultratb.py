@@ -441,6 +441,24 @@ def test_plain_reports_notes():
         ip.run_cell("%xmode Verbose")
 
 
+_ERROR_WITH_BROKEN_STR = """
+class BadStr(Exception):
+    def __str__(self):
+        raise RuntimeError("broken __str__")
+
+e = BadStr()
+e.add_note("This is a PEP-678 note.")
+raise e
+"""
+
+
+def test_verbose_broken_str_keeps_name_and_notes():
+    with tt.AssertPrints(
+        ["BadStr: <exception str() failed>", "This is a PEP-678 note."]
+    ):
+        ip.run_cell(_ERROR_WITH_BROKEN_STR)
+
+
 def test_jsondecodeerror_message():
     """Test that exception string repr is preferred over .msg for non-SyntaxError in %xmode plain."""
     cell = "import json;json.loads('{\"a\": }')"

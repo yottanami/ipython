@@ -127,13 +127,15 @@ def test_broken_str_exception(doctb):
             raise RuntimeError("broken __str__")
 
     try:
-        raise BadStr()
+        e = BadStr()
+        e.add_note("note on a broken exception")
+        raise e
     except BadStr:
         etype, evalue, etb = sys.exc_info()
     stb = doctb.structured_traceback(etype, evalue, etb, context=1)
     text = "".join(stb)
-    assert "RuntimeError" in text
-    assert "broken __str__" in text
+    assert "BadStr: <exception str() failed>" in text
+    assert "note on a broken exception" in text
 
 
 def test_broken_repr_local(doctb):

@@ -269,8 +269,8 @@ class DocTB(TBTools):
             etype_str, evalue_str = map(str, (etype, evalue))
         except Exception:
             # User exception is improperly defined.
-            etype, evalue = str, sys.exc_info()[:2]
-            etype_str, evalue_str = map(str, (etype, evalue))
+            etype_str = _safe_string(etype, "exception type")
+            evalue_str = _safe_string(evalue, "exception")
 
         # PEP-678 notes
         notes = getattr(evalue, "__notes__", [])
